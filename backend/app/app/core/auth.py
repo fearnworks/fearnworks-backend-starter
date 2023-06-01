@@ -58,7 +58,7 @@ def create_access_token(*, sub: str) -> str:
     """
     return _create_token(
         token_type="access_token",
-        lifetime=timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES),
+        lifetime=timedelta(minutes=settings.auth.ACCESS_TOKEN_EXPIRE_MINUTES),
         sub=sub,
     )
 
@@ -95,4 +95,4 @@ def _create_token(
     # The "sub" (subject) claim identifies the principal that is the
     # subject of the JWT
     payload["sub"] = str(sub)
-    return jwt.encode(payload, settings.JWT_SECRET, algorithm=settings.ALGORITHM)
+    return jwt.encode(payload, settings.auth.JWT_SECRET, algorithm=settings.auth.ALGORITHM)

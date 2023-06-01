@@ -1,13 +1,14 @@
 import json
-import logging
+from loguru import logger
 import time
 from pathlib import Path
 
 from app import crud
 from app.api import deps
 from app.api.api_v1.api import api_router
-from app.core.config import settings
-from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request, logger
+from app.core.config import settings, setup_app_logging
+from fastapi import APIRouter, Depends, FastAPI, HTTPException, Request
+from loguru import logger
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
@@ -16,15 +17,14 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from starlette.middleware.base import BaseHTTPMiddleware
 
+
 # Define the base path of this script
 BASE_PATH = Path(__file__).resolve().parent
 
 # Create a Jinja2Templates instance for rendering HTML templates
 TEMPLATES = Jinja2Templates(directory=str(BASE_PATH / "templates"))
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger("app")
-logger.info("Logger created")
+setup_app_logging(config=settings)
 
 import asyncio
 import json

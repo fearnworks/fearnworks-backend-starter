@@ -1,19 +1,15 @@
-import logging
+from loguru import logger
 
 from app.db.session import SessionLocal
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
-
-# Set up logging
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
 
 # Define the maximum number of tries and the wait time between tries
 max_tries = 60 * 5  # 5 minutes
 wait_seconds = 1
 
-from dotenv import load_dotenv
+from dotenv import load_dotenv, find_dotenv
 
-load_dotenv()  # take environment variables from .env.
+load_dotenv(find_dotenv())  # take environment variables from .env.
 
 
 @retry(
@@ -36,7 +32,7 @@ def init() -> None:
         # Create a new session
         db = SessionLocal()
         # Try to execute a simple query to check if the database is awake
-        db.execute("SELECT 1")
+        db.execute(text("SELECT 1"))
     except Exception as e:
         logger.error(e)
         raise e

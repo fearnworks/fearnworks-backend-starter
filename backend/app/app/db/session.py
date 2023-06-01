@@ -14,7 +14,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
 # Heroku workaround: https://help.heroku.com/ZKNTJQSK/why-is-sqlalchemy-1-4-x-not-connecting-to-heroku-postgres
-connection_uri = settings.SQLALCHEMY_DATABASE_URI
+connection_uri = settings.db.SQLALCHEMY_DATABASE_URI
 
 # Detect the type of the database
 if connection_uri.startswith("sqlite://"):
