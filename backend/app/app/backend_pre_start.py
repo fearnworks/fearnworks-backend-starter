@@ -1,7 +1,9 @@
-from loguru import logger
+import logging
+logger = logging.getLogger(__name__)
 
 from app.db.session import SessionLocal
 from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
+from sqlalchemy import text
 
 # Define the maximum number of tries and the wait time between tries
 max_tries = 60 * 5  # 5 minutes
