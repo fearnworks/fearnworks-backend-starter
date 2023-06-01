@@ -38,4 +38,6 @@ if connection_uri.startswith("postgres://"):
 engine = create_engine(
     connection_uri,
 )
-SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+# Create a session factory with thread awareness
+SessionLocal = sessionmaker(bind=engine)

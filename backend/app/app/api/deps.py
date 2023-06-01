@@ -50,7 +50,7 @@ def get_db() -> Generator:
         db.close()
 
 
-async def get_current_user(
+def get_current_user(
     db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)
 ) -> User:
     """
