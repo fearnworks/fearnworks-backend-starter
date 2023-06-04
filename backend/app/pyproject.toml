@@ -11,7 +11,8 @@ dependencies = [
     "uvicorn~=0.11.3",
     "fastapi~=0.68.0",
     "python-multipart~=0.0.5",
-    "pydantic[email]~=1.8.1",
+    "pydantic",
+    "pydantic[email]",
     "Jinja2~=3.0.1",
     "SQLAlchemy~=1.4.3",
     "alembic~=1.6.5",
@@ -21,7 +22,8 @@ dependencies = [
     "passlib",
     "python-jose",
     "tenacity",
-    "python-dotenv"
+    "python-dotenv",
+    "bcrypt",
 ]
 
 [tool.setuptools]

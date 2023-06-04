@@ -113,13 +113,14 @@ celerybeat.pid
 
 # Environments
 .env
-.venv
+.venv*
 env/
 venv/
 ENV/
 env.bak/
 venv.bak/
 
+testdb.sqlite3 # SQLite
 # Spyder project settings
 .spyderproject
 .spyproject
@@ -150,3 +151,5 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
+testdb.db
+backend/app/testdb.db
