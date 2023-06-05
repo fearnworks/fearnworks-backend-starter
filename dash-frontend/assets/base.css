@@ -60,7 +60,7 @@ body {
  
   .page-1f {
    color: white;
-   background-color: #00ffff;
+   background-color: #0059ff;
    margin-top: -38px;
    margin-right: -38px;
    width: 50%;
@@ -141,8 +141,8 @@ body {
 .page-2a {
   background-color: #003399;
   color: white;
-  width: 200px;
-  height: 160px;
+  width: 80%;
+  height: 80px;
   padding: 20px;
   margin-left: 50px;
   margin-top: -38px;
@@ -162,10 +162,10 @@ body {
  }
  
  .page-3a {
-  background-color: #00ffff;
+  background-color: #0004ff;
   color: white;
-  width: 200px;
-  height: 160px;
+  width: 80%;
+  height: 80px;
   padding: 20px;
   margin-left: 50px;
   margin-top: -38px;

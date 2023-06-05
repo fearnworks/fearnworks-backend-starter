@@ -106,3 +106,4 @@ class CoverPage:
                             ],
                             className="page-1d",
                         )
+    

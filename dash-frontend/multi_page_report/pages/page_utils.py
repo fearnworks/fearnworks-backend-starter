@@ -21,3 +21,6 @@ class PageUtils:
                 ],
                 className="page-1k",
             )
+    
+    def create_paragraph(self, num_paragraphs: int, className: str = "") -> html.Div:
+          return html.P(lorem.paragraph() * num_paragraphs, className=className)
