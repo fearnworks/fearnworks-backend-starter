@@ -8,3 +8,16 @@ services:
       - "8001:8001"
     volumes:
       - ./backend/app:/app
+    network_mode: "host"
+
+  dash_app:
+    build:
+      context: ./dash-frontend
+      dockerfile: Dockerfile
+    ports:
+      - "8050:8050"
+    environment:
+      - DOCKER_HOST_IP=${DOCKER_HOST_IP}
+    env_file:
+      - .env
+    network_mode: "host"

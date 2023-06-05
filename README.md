@@ -65,6 +65,15 @@ The project uses bcrypt for password hashing and verification, and JWT for user 
 - The auth.py file in the core module handles user authentication and token management. It includes functions for user authentication and the creation of access tokens.
 - The security.py file in the core module handles password encryption and verification using bcrypt. It includes functions for verifying a password against a hashed password and hashing a password.
 
+## Set up Commands : 
+To determine the ip of docker-compose host : 
+
+```bash
+sudo apt install net-tools
+ifconfig | grep "inet " | grep -Fv 127.0.0.1 | awk '{print $2}'
+```
+
+
 ## License 
 
 This project is licensed under the terms of the Apache 2.0 License 
