@@ -1,0 +1,5 @@
+dash
+plotly
+pandas
+lorem
+pathlib==1.0.1
