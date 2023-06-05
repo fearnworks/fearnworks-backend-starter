@@ -5,14 +5,15 @@ import plotly.graph_objs as go
 import pandas as pd
 import lorem
 import pathlib
-from multi-page-report.scatter_graphs import ScatterGraph, MultipleScatterGraph, MultipleYScatterGraph, create_energy_line_scatter, create_producer_scatter_graph
-
+from multi_page_report.scatter_graphs import ScatterGraph, MultipleScatterGraph, MultipleYScatterGraph, create_energy_line_scatter, create_producer_scatter_graph, build_production_scatter
+import multi_page_report.pages as MPR_Pages
+import base64
 
 class MultiPageOptions:
     def __init__(self):
-        self.title = "My Multipage Report"
+        self.title = "Example Report"
         self.author = "John Doe"
-        self.logo_path = "logo.png"
+        self.logo_file = "dash-logo-new.png"
         self.page_titles = ["Page 1", "Page 2", "Page 3"]
         self.page_layouts = [
             html.Div(
@@ -52,7 +53,7 @@ class MultiPageOptions:
 
 
 class MultiPageDataLoader:
-    def __init__(self, base_path="multi-page-report/report-example"):
+    def __init__(self, base_path="multi_page_report/report-example"):
         self.BASE_PATH = pathlib.Path(base_path).resolve()
         self.DATA_PATH = self.BASE_PATH.joinpath("Data").resolve()
 
@@ -69,16 +70,25 @@ class ColorManager:
         self.color_3 = "#002277"
         self.color_b = "#F8F8FF"
 
-class MultiPageReport:
+class MultiPageReportBuilder:
     def __init__(self, options=MultiPageOptions, data_loader=MultiPageDataLoader, color_manager=ColorManager):
         self.options = options()
         self.data_loader = data_loader()
         self.color = color_manager()
+        self.utils = MPR_Pages.PageUtils()
+
+    def encode_logo(self, app, logo_file: str):
+        return html.Img(
+            src=app.get_asset_url(
+                logo_file
+            ),
+            className="page-1a",
+        )
 
     def generate_multipage_report(self, app):
         options = MultiPageOptions()
         # Path
-        BASE_PATH = pathlib.Path("multi-page-report/report-example").resolve()
+        BASE_PATH = pathlib.Path("multi_page_report/report-example").resolve()
         DATA_PATH = BASE_PATH.joinpath("Data").resolve()
 
         ## Read in data
@@ -114,141 +124,33 @@ class MultiPageReport:
 
         server = app.server
 
+        ## Cover page takes in : def __init__(self, img_path: str, title: str, subtitle: str, author: str, report_name: str, report_id: str, report_period: str)
+        cover_logo = self.encode_logo(app, options.logo_file)
+        self.cover_page = MPR_Pages.CoverPage(logo=cover_logo, subtitle="An example report", author=options.author, report_name=options.title, report_id="R-001", report_period="05/01/23-05/31/23", delivery_date="06/05/2023")
+
         app.layout = html.Div(
             children=[
-                self.create_pg1(app),
-                self.create_pg2(app),
-                self.create_pg3(app),
-                self.create_pg4(app, supplyDemand=supplyDemand, actualSeasonal=actualSeasonal, industrialProd=industrialProd, growthGdp=growthGdp),
-                self.create_pg5(app, globalMarket=globalMarket, oecdCommercial=oecdCommercial),
+                self.cover_page.layout,
+                self.create_summary_page(app),
+                self.create_summary_page_alt(app),
+                self.create_graph_and_block_quote_page(app, supplyDemand=supplyDemand, actualSeasonal=actualSeasonal, industrialProd=industrialProd, growthGdp=growthGdp),
+                self.create_global_market_page(app, globalMarket=globalMarket, oecdCommercial=oecdCommercial),
                 self.create_pg6(app, wtiPrices=wtiPrices),
                 self.create_pg7(app, epxEquity=epxEquity),
                 self.create_pg8(app),
                 self.create_pg9(app, chinaSpr=chinaSpr),
-                self.create_pg10(app, oecdIndustry=oecdIndustry, productionCost=productionCost, production2015=production2015, wtiOilprices=wtiOilprices),
+                self.create_anomaly_analysis_page(app, oecdIndustry=oecdIndustry, productionCost=productionCost, production2015=production2015, wtiOilprices=wtiOilprices),
                 self.create_pg11(app, energyShare=energyShare),
                 self.create_pg12(app, adjustedSales=adjustedSales),
             ]
         )
         return app
     
-    def create_text_block(self, header_text: str, num_paragraphs: int) -> html.Div:
-        """
-        Creates a text block with a header and one or more paragraphs of lorem ipsum text.
-
-        Args:
-            header_text (str): The text to use as the header for the text block.
-            num_paragraphs (int): The number of paragraphs of lorem ipsum text to include in the block.
-
-        Returns:
-            html.Div: A Div element containing the header and paragraphs of text.
-        """
-        return html.Div(
-            [
-                html.H6(header_text, className="page-1h"),
-                html.P(lorem.paragraph() * num_paragraphs),
-            ],
-            className="page-1k",
-        )
+ 
 
 
-    def create_pg1(self, app: dash.Dash) -> html.Div:
-        """
-        Creates the layout for the first page of the multipage report.
-
-        Args:
-            app (dash.Dash): The Dash app instance.
-
-        Returns:
-            html.Div: The layout for the first page of the report.
-        """
-        return html.Div(
-                    [
-                        html.Div(
-                            [
-                                html.Div(
-                                    [
-                                        html.Div(
-                                            [
-                                                html.Div(
-                                                    [
-                                                        html.Div(
-                                                            html.Img(
-                                                                src=app.get_asset_url(
-                                                                    "dash-logo-new.png"
-                                                                ),
-                                                                className="page-1a",
-                                                            )
-                                                        ),
-                                                        html.Div(
-                                                            [
-                                                                html.H6("Suscipit nibh"),
-                                                                html.H5("LOREM IPSUM DOLOR"),
-                                                                html.H6("Blandit pretium dui"),
-                                                            ],
-                                                            className="page-1b",
-                                                        ),
-                                                    ],
-                                                    className="page-1c",
-                                                )
-                                            ],
-                                            className="page-1d",
-                                        ),
-                                        html.Div(
-                                            [
-                                                html.H1(
-                                                    [
-                                                        html.Span("03", className="page-1e"),
-                                                        html.Span("19"),
-                                                    ]
-                                                ),
-                                                html.H6("Suscipit nibh vita"),
-                                            ],
-                                            className="page-1f",
-                                        ),
-                                    ],
-                                    className="page-1g",
-                                ),
-                                html.Div(
-                                    [
-                                        html.Div(
-                                            [
-                                                html.H6("Report Author", className="page-1h"),
-                                                html.P("555-555-5555"),
-                                                html.P("author@report.com"),
-                                            ],
-                                            className="page-1i",
-                                        ),
-                                        html.Div(
-                                            [
-                                                html.H6("Report Name", className="page-1h"),
-                                                html.P("06/04/2023"),
-                                                html.P("Report ID: 123456"),
-                                                html.P("Report Period: 5/1/2023-5/31/2023"),
-                                            ],
-                                            className="page-1i",
-                                        ),
-                                        
-                                    ],
-                                    className="page-1j",
-                                ),
-                                html.Div(
-                                    [
-                                        self.create_text_block("A elementum lorem dolor aliquam nisi diam", 2),
-                                        self.create_text_block("A elementum lorem dolor aliquam nisi diam", 2),
-                                        self.create_text_block("A elementum lorem dolor aliquam nisi diam", 1),
-                                        self.create_text_block("A elementum lorem dolor aliquam nisi diam", 1),
-                                    ],
-                                    className="page-1n",
-                                ),
-                            ],
-                            className="subpage",
-                        )
-                    ],
-                    className="page",
-                )
     
-    def create_pg2(self, app) -> html.Div:
+    def create_summary_page(self, app) -> html.Div:
         return html.Div(
                     [
                         html.Div(
@@ -276,7 +178,7 @@ class MultiPageReport:
                     className="page",
                 )
     
-    def create_pg3(self, app) -> html.Div:
+    def create_summary_page_alt(self, app) -> html.Div:
         return  html.Div([
                     html.Div(
                         [
@@ -349,7 +251,7 @@ class MultiPageReport:
                 className="page",
             )
 
-    def create_pg4(self, app, supplyDemand: pd.DataFrame, actualSeasonal, industrialProd: pd.DataFrame, growthGdp: pd.DataFrame) -> html.Div:
+    def create_graph_and_block_quote_page(self, app, supplyDemand: pd.DataFrame, actualSeasonal, industrialProd: pd.DataFrame, growthGdp: pd.DataFrame) -> html.Div:
         return   html.Div(
                 [
                     html.Div(
@@ -930,7 +832,7 @@ class MultiPageReport:
                 className="page",
             )
             
-    def create_pg5(self, app, globalMarket: pd.DataFrame, oecdCommercial) -> html.Div:
+    def create_global_market_page(self, app, globalMarket: pd.DataFrame, oecdCommercial) -> html.Div:
         """
         Creates the layout for page 5 of the report.
 
@@ -953,10 +855,7 @@ class MultiPageReport:
                                 [
                                     html.Div(
                                         [
-                                            html.Div(
-                                                [html.P(lorem.paragraph())],
-                                                className="page-5",
-                                            ),
+                                            html.H6("Global Market"),
                                             html.Div(
                                                 [html.P(lorem.paragraph())],
                                                 className="page-5a",
@@ -2052,8 +1951,8 @@ class MultiPageReport:
             className="page",
         )
     
-    def create_pg10(self, app, oecdIndustry: pd.DataFrame, productionCost, production2015, wtiOilprices):
-        producer_scatter_graph = create_producer_scatter_graph(production2015)
+    def create_anomaly_analysis_page(self, app, oecdIndustry: pd.DataFrame, productionCost, production2015, wtiOilprices):
+        producer_scatter_graph = create_producer_scatter_graph(production2015, self.color)
         return html.Div(
             [
                 html.Div(
@@ -2064,10 +1963,7 @@ class MultiPageReport:
                                     [
                                         html.Div(
                                             [
-                                                html.Strong(
-                                                    "Nulla diam conubia nec lacus urna in ligula nec ut egestas sed. Diam inceptos nec venenatis",
-                                                    className="page-3h",
-                                                ),
+                                                html.H5("Anomoly Analysis"),
                                                 html.P(
                                                     "Nulla diam conubia nec lacus urna in ligula nec ut egestas sed",
                                                     className="page-3k",
@@ -2457,10 +2353,10 @@ class MultiPageReport:
     
     def create_pg11(self,app, energyShare: pd.DataFrame):
         
-        energy_line_scatter = create_energy_line_scatter(energyShare)
+        energy_line_scatter = create_energy_line_scatter(energyShare, self.color)
 
         return html.Div(
-            [
+            [  
                 html.Div(
                     [
                         html.Div(
@@ -2488,7 +2384,7 @@ class MultiPageReport:
 
     def create_pg12(self,app, adjustedSales: pd.DataFrame):
             # Page 12
-            html.Div(
+            return html.Div(
                 [
                     html.Div(
                         [

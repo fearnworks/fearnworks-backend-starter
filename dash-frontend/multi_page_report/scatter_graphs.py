@@ -1,6 +1,6 @@
 import plotly.graph_objs as go
-import dash_core_components as dcc
-import dash_html_components as html
+from dash import dcc, html
+import pandas as pd 
 
 class ScatterGraph:
     def __init__(self):
@@ -173,14 +173,20 @@ def build_production_scatter(x_data, y_data):
     # Create the scatter plot
     return scatter_graph.create(scatter_data, layout_config)
 
-def create_energy_line_scatter(self, data: pd.DataFrame) -> html.Div:
+class Color:
+    color_1: str
+    color_2: str
+    color_3: str
+    color_b: str
+
+def create_energy_line_scatter(data: pd.DataFrame, color: Color) -> html.Div:
     scatter_graph = MultipleYScatterGraph()
     energyShare = data
     energy_scatter_data = [
         scatter_graph.create_scatter(
             energyShare["Energy share of HY Issuance, x"],
             energyShare["Energy share of HY Issuance, y"],
-            self.color.color_1,
+            color.color_1,
             "diamond",
             "lines",
             "Energy share of HY Issuance"
@@ -188,7 +194,7 @@ def create_energy_line_scatter(self, data: pd.DataFrame) -> html.Div:
         scatter_graph.create_scatter(
             energyShare["US oil rig count  (monthly change), x"],
             energyShare["US oil rig count  (monthly change), y"],
-            self.color.color_2,
+            color.color_2,
             "diamond",
             "lines",
             "US oil rig count  (monthly change)",
@@ -284,7 +290,7 @@ def create_energy_line_scatter(self, data: pd.DataFrame) -> html.Div:
     }
     return scatter_graph.create(energy_scatter_data, energy_scatter_layout_config, className="eleven columns")
 
-def create_producer_scatter(production2015):
+def create_producer_scatter_graph(production2015, color: Color) -> html.Div:
         scatter_graph = MultipleScatterGraph()
 
         scatter_data = [
@@ -299,7 +305,7 @@ def create_producer_scatter(production2015):
             scatter_graph.create_scatter(
                 production2015["US E&Ps and Integrated, x"], 
                 production2015["US E&Ps and Integrated, y"], 
-                self.color.color_2, 
+                color.color_2, 
                 "diamond", 
                 "markers", 
                 "US E&Ps and Integrated"
@@ -307,7 +313,7 @@ def create_producer_scatter(production2015):
             scatter_graph.create_scatter(
                 production2015["Others, x"], 
                 production2015["Others, y"], 
-                self.color.color_1, 
+                color.color_1, 
                 "diamond", 
                 "markers", 
                 "Others"
